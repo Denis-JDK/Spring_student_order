@@ -1,15 +1,56 @@
 package my.homework.spring_next_step.validator;
 
+import my.homework.spring_next_step.SaveStudentOrder;
 import my.homework.spring_next_step.StudentOrder;
-import my.homework.spring_next_step.answerAfterCheck.AnswerChildren;
-import my.homework.spring_next_step.answerAfterCheck.AnswerCityRegister;
-import my.homework.spring_next_step.answerAfterCheck.AnswerStudent;
-import my.homework.spring_next_step.answerAfterCheck.AnswerWedding;
+import my.homework.spring_next_step.domain_answerAfterCheck.AnswerChildren;
+import my.homework.spring_next_step.domain_answerAfterCheck.AnswerCityRegister;
+import my.homework.spring_next_step.domain_answerAfterCheck.AnswerStudent;
+import my.homework.spring_next_step.domain_answerAfterCheck.AnswerWedding;
+import my.homework.spring_next_step.mail.SendMail;
 
 //проверка студенческой заявки, считываем заявку из БД и проверяем
 public class StudentOrderValidator {
+    private CityRegisterValidator cityRegisterValidator;
+    private ChildrenValidator childrenValidator;
+    private StudentValidator studentValidator;
+    private WeddingValidator weddingValidator;
+    private SendMail sendMail;
 
-    StudentOrder so;
+
+   private StudentOrder so;
+
+    public void setCityRegisterValidator(CityRegisterValidator cityRegisterValidator) {
+        this.cityRegisterValidator = cityRegisterValidator;
+    }
+
+    public void setChildrenValidator(ChildrenValidator childrenValidator) {
+        this.childrenValidator = childrenValidator;
+    }
+
+    public void setStudentValidator(StudentValidator studentValidator) {
+        this.studentValidator = studentValidator;
+    }
+
+    public void setWeddingValidator(WeddingValidator weddingValidator) {
+        this.weddingValidator = weddingValidator;
+    }
+
+    public void setSendMail(SendMail sendMail) {
+        this.sendMail = sendMail;
+    }
+
+    public void setSo(StudentOrder so) {
+        this.so = so;
+    }
+
+    public StudentOrderValidator() {
+        childrenValidator= new ChildrenValidator();
+        cityRegisterValidator = new CityRegisterValidator();
+        studentValidator = new StudentValidator();
+        weddingValidator= new WeddingValidator();
+        sendMail=new SendMail();
+    }
+
 
     public static void main(String[] args) {
 
@@ -19,64 +60,50 @@ public class StudentOrderValidator {
     }
 
     public void checkAll() {
+            StudentOrder[] soArray = readStudentOrderFromDB();
+            for(int i =0; i<soArray.length;i++){
+                checkOneOrder(soArray[i]);
 
-        while (true) {
-            StudentOrder so = readStudentOrderFromDB();
-
-            if (so == null) {
-                break; //если заявка null, значит мы все заявки обработали. Прерываем полностью цикл
             }
 
-            AnswerCityRegister cityAnswer = checkCityRegisterValidator(so);
-            if (!cityAnswer.isSuccess()) {
-                // continue; //прекращаем обработку текущей заявки, возвращаемся в начало цикла и переходим к следующей заявки
-                break;
-            }
+    }
 
-            AnswerWedding wedAnswer = checkWeddingValidator(so);
-            AnswerStudent stAnswer = checkStudentValidator(so);
-            AnswerChildren childAnswer = checkChildrenValidator(so);
+    public void checkOneOrder(StudentOrder so){
+        AnswerCityRegister cityAnswer = checkCityRegisterValidator(so);
+        AnswerWedding wedAnswer = checkWeddingValidator(so);
+        AnswerStudent stAnswer = checkStudentValidator(so);
+        AnswerChildren childAnswer = checkChildrenValidator(so);
 
-            sendMailValidator(so);
+        sendMailValidator();
+    }
+
+    public StudentOrder[] readStudentOrderFromDB() {
+        StudentOrder[] soArray = new StudentOrder[3];
+        for (int i = 0; i<soArray.length; i++){
+            soArray[i]=SaveStudentOrder.buildStudentOrder(i);
         }
-    }
-
-    public StudentOrder readStudentOrderFromDB() {
-        // StudentOrder so = new StudentOrder();
-        return so;
+        return soArray;
     }
 
 
 
 
-    static AnswerCityRegister checkCityRegisterValidator(StudentOrder so){
-        CityRegisterValidator crv = new CityRegisterValidator();
-        crv.hostName="Host CityRegister";
-        AnswerCityRegister ans = crv.checkCityRegister(so);
-        return ans;
+    public AnswerCityRegister checkCityRegisterValidator(StudentOrder so){
+        return cityRegisterValidator.checkCityRegister(so);
     }
 
-    static AnswerWedding checkWeddingValidator(StudentOrder so){
-        WeddingValidator wv = new WeddingValidator();
-        wv.setHostName("Host Wedding");
-        AnswerWedding ans = wv.checkWedding(so);
-        return ans;
+    public AnswerWedding checkWeddingValidator(StudentOrder so){
+        return weddingValidator.checkWedding(so);
     }
 
-    static AnswerStudent checkStudentValidator(StudentOrder so){
-        StudentValidator sv= new StudentValidator();
-        sv.setHostName("Host Student");
-        AnswerStudent ans = sv.checkStudent(so);
-        return ans;
+    public AnswerStudent checkStudentValidator(StudentOrder so){
+        return studentValidator.checkStudent(so);
     }
-    static AnswerChildren checkChildrenValidator(StudentOrder so){
-        ChildrenValidator chv = new ChildrenValidator();
-        chv.setHostName("Host Child");
-        AnswerChildren ans = chv.checkChildren(so);
-        return ans;
+    public AnswerChildren checkChildrenValidator(StudentOrder so){
+        return childrenValidator.checkChildren(so);
     }
-    static void sendMailValidator(StudentOrder so) {
-        System.out.println("email send");
+    public void sendMailValidator() {
+        sendMail.sendMail();
     }
 
 }

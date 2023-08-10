@@ -1,6 +1,8 @@
 package my.homework.spring_next_step;
 
 import lombok.*;
+import my.homework.spring_next_step.domain_answerAfterCheck.Adult;
+import my.homework.spring_next_step.domain_answerAfterCheck.Child;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
@@ -11,10 +13,10 @@ import org.springframework.stereotype.Component;
 @AllArgsConstructor
 public class StudentOrder {
 
-    private String hFirstName;
-    private String hSecondName;
-//    private String wFirstName;
-//    private String wSecondName;
+    private long studentOrderId;
+    private Adult husband;
+    private Adult wife;
+    private Child child;
 
 
 

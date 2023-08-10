@@ -14,9 +14,24 @@
         <property name="hFirstName" value="${studentOrder.hFirstName}"/>
         <property name="hSecondName" value="Laky"/>
     </bean>
+    <bean id="cityRegisterValidator"
+          class="my.homework.spring_next_step.validator.CityRegisterValidator"/>
+    <bean id="childrenValidator"
+          class="my.homework.spring_next_step.validator.ChildrenValidator"/>
+    <bean id="studentValidator"
+          class="my.homework.spring_next_step.validator.StudentValidator"/>
+    <bean id="weddingValidator"
+          class="my.homework.spring_next_step.validator.WeddingValidator"/>
+    <bean id="sendMail"
+          class="my.homework.spring_next_step.mail.SendMail"/>
     <bean id="studentOrderValidator"
           class="my.homework.spring_next_step.validator.StudentOrderValidator">
         <property name="so" ref="studentOrder"/>
+        <property name="cityRegisterValidator" ref="my.homework.spring_next_step.validator.CityRegisterValidator"/>
+        <property name="childrenValidator" ref="childrenValidator"/>
+        <property name="studentValidator" ref="studentValidator"/>
+        <property name="weddingValidator" ref="weddingValidator"/>
+        <property name="sendMail" ref="sendMail"/>
     </bean>
 
 

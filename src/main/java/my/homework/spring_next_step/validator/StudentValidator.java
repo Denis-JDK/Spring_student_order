@@ -3,7 +3,7 @@ package my.homework.spring_next_step.validator;
 import lombok.Getter;
 import lombok.Setter;
 import my.homework.spring_next_step.StudentOrder;
-import my.homework.spring_next_step.answerAfterCheck.AnswerStudent;
+import my.homework.spring_next_step.domain_answerAfterCheck.AnswerStudent;
 @Setter
 @Getter
 public class StudentValidator {
